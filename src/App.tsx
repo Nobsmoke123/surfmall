@@ -1,34 +1,21 @@
-import { useEffect, useState } from "react";
-import type { Product } from "./types/Product";
+import ProductList from "./components/ProductList";
+import { useProducts } from "./context/ProductContext";
 
 const App = () => {
-  const [products, setProduct] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { products, loading, error } = useProducts();
 
-  useEffect(() => {
-    const fetchProductsAsync = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch("http://localhost:5001/products");
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+      <h1 className="text-3xl font-bold mb-6">🛒 Product Catalog </h1>
+      {loading && (
+        <p className="text-white text-sm font-semibold"> Loading...</p>
+      )}
 
-        if (!response.ok) {
-          // Handle HTTP error status codes
-          const errorText = await response.text();
-          throw new Error(
-            `HTTP error! Status: ${response.status}, Message: ${errorText}`
-          );
-        }
-      } catch (error) {
-        setError((error as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProductsAsync();
-  }, []);
+      {error && <p className="text-white text-sm font-semibold">{error}</p>}
 
-  return <div className="text-black text-3xl">Welcome to React!</div>;
+      <ProductList products={products} />
+    </div>
+  );
 };
 
 export default App;
