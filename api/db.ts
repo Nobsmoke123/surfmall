@@ -1,6 +1,8 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-import db from "../src/data/db.json";
+import db from "../src/data/db.json" assert { type: "json" };
+
+console.log("The Db is: ", db);
 
 export default function handler(_req: VercelRequest, res: VercelResponse) {
   res.status(200).json(db.products);
