@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { CartProduct } from "../types/Cart";
 import type { Product } from "../types/Product";
 
@@ -17,9 +17,31 @@ export const CartContext = createContext<{
 });
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [cart, setCart] = useState<CartProduct[]>([]);
   const [cartCount, setCartCount] = useState(0);
   const [amount, setAmount] = useState(0);
+
+  const [cart, setCart] = useState<CartProduct[]>(() => {
+    const storage = localStorage.getItem("cart");
+    const items: CartProduct[] = storage !== null ? JSON.parse(storage) : [];
+    return items;
+  });
+
+  useEffect(() => {
+    const cartQuantity = cart.reduce((acc: number, item: CartProduct) => {
+      return acc + item.quantity;
+    }, 0);
+
+    const cartTotalAmount = cart.reduce((acc: number, item: CartProduct) => {
+      return acc + item.price;
+    }, 0);
+
+    setAmount(() => cartTotalAmount);
+    setCartCount(() => cartQuantity);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
 
   const addToCart = (newItem: Product) => {
     const existing = cart.find(({ product }) => product.id === newItem.id);
@@ -47,11 +69,9 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       ];
     }
 
-    const cartQuantity = newCart
-      .slice()
-      .reduce((acc: number, item: CartProduct) => {
-        return acc + item.quantity;
-      }, 0);
+    const cartQuantity = newCart.reduce((acc: number, item: CartProduct) => {
+      return acc + item.quantity;
+    }, 0);
 
     const cartTotalAmount = newCart.reduce((acc: number, item: CartProduct) => {
       return acc + item.price;
@@ -71,7 +91,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       newCart = cart.map((item) => {
         if (item.product.id === newItem.id) {
           item.quantity = item.quantity - 1;
-          item.price = item.quantity * item.price;
+          item.price = item.quantity * item.product.price;
         }
         return item;
       });

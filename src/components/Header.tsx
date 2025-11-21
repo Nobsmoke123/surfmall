@@ -1,6 +1,7 @@
 import { FaShoppingCart } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
 import { useState } from "react";
+import CartItem from "./CartItem";
 
 const Header = () => {
   const { cart, cartCount, amount, addToCart, removeFromCart } = useCart();
@@ -28,49 +29,34 @@ const Header = () => {
           )}
           {isCartVisible && (
             <div className="w-70 h-100 overflow-y-scroll bg-gray-200 absolute -right-3 top-11 rounded-b-md px-0.5 py-0.5">
-              <h3 className="text-stone-600 text-sm font-bold bg-white text-center mb-1">
+              <h3 className="text-stone-600 text-sm font-bold bg-white text-center">
                 Shopping Cart
               </h3>
-
+              <hr className="bg-slate-100 border border-slate-200" />
               {cartCount > 0 ? (
-                <div className="flex flex-col gap-1">
-                  {cart.map((cartItem) => (
-                    <div
-                      key={cartItem.id}
-                      className="bg-white w-full flex px-2 rounded-sm"
-                    >
-                      <img
-                        src={cartItem.product.image}
-                        alt={cartItem.product.name}
-                        className="size-25 rounded-md object-contain"
+                <div className="flex flex-col justify-between">
+                  <div className=" bg-white flex justify-between mb-1 py-2">
+                    <p className="text-stone-600 text-sm font-bold text-center">
+                      Total:
+                    </p>
+                    <p className="text-stone-600 text-sm font-bold text-center">
+                      ${amount.toFixed(2)}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col gap-1 flex-1">
+                    {cart.map((cartItem) => (
+                      <CartItem
+                        key={cartItem.id}
+                        cartItem={cartItem}
+                        addToCart={addToCart}
+                        removeFromCart={removeFromCart}
                       />
-                      <div className="flex-1">
-                        <h2 className="text-black-100 text-sm font-bold mb-1">
-                          {cartItem.product.name}
-                        </h2>
-                        <div className="flex justify-between mb-1">
-                          <button
-                            onClick={() => removeFromCart(cartItem.product)}
-                            className="bg-blue-400 px-2 rounded-sm text-white text-sm font-bold"
-                          >
-                            -
-                          </button>
-                          <h2 className="text-sm font-bold text-black-100">
-                            {cartItem.quantity}
-                          </h2>
-                          <button
-                            onClick={() => addToCart(cartItem.product)}
-                            className="bg-blue-400 px-2 rounded-sm text-white text-sm font-bold"
-                          >
-                            +
-                          </button>
-                        </div>
-                        <h2 className="text-center text-black-100 font-bold">
-                          ${cartItem.price.toFixed(2)}
-                        </h2>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                  <button className="bg-blue-400 mt-1 rounded-b-md px-3 text-white text-md font-bold">
+                    Checkout
+                  </button>
                 </div>
               ) : (
                 <div className="w-full h-full flex  flex-col justify-center items-center gap-2">
