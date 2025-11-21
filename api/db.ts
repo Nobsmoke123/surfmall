@@ -1,9 +1,13 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-import db from "../src/data/db.json" assert { type: "json" };
+import path from "path";
+import fs from "fs";
 
-console.log("The Db is: ", db);
+const dbPath = path.join(process.cwd(), "src/data/db.json");
 
 export default function handler(_req: VercelRequest, res: VercelResponse) {
-  res.status(200).json(db.products);
+  const raw = fs.readFileSync(dbPath, "utf-8");
+  const db = JSON.parse(raw);
+
+  res.status(200).json(db);
 }
