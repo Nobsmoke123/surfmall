@@ -36,7 +36,6 @@ export const ProductProvider = ({
 
         const data: Product[] = await response.json();
 
-        console.log("The data is: ", data);
         setProduct(() => [...data]);
       } catch (error) {
         setError((error as Error).message);
