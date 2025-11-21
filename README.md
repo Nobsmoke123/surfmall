@@ -2,6 +2,10 @@
 
 A modern, responsive shopping cart application built with React, TypeScript, and Tailwind CSS. This project demonstrates a complete e-commerce UI with product catalog, shopping cart functionality, and persistent cart storage using localStorage and the React Context API.
 
+**Live Preview:** [surfmall.vercel.app](https://surfmall.vercel.app/)
+
+---
+
 ## ✨ Features
 
 - **Product Catalog**: Browse a collection of products with images, descriptions, prices, and ratings
